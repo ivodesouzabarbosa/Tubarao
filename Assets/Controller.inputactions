@@ -1,0 +1,35 @@
+{
+    "version": 1,
+    "name": "Controller",
+    "maps": [
+        {
+            "name": "MouseControl",
+            "id": "dbc514b3-7720-450c-8382-d91fc370f4d8",
+            "actions": [
+                {
+                    "name": "Mover",
+                    "type": "Value",
+                    "id": "0d86e8ae-6120-4614-abb6-279475ed811f",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "e720c8d7-f968-4021-91b6-d5a7953ec473",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Mover",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
