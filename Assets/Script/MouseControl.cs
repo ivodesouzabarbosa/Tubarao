@@ -1,3 +1,5 @@
+using System;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 public class MouseControl : MonoBehaviour
@@ -14,20 +16,41 @@ public class MouseControl : MonoBehaviour
     [SerializeField] float _tiltSpeed = 6f;
     [SerializeField] float _maxTilt = 60f;
 
+    [SerializeField] float veloctyG;
+    [SerializeField] bool _chekMove;
+    [SerializeField] Animator _anim;
+
     Vector3 _lastPosition;
+    [SerializeField] float deadZone = 150f;
 
     private void Start()
     {
         _lastPosition = _followTarget.position;
+        //_anim = GetComponent<Animator>();
     }
 
     private void Update()
     {
-        // Move target
+        // Move target com desaceleração no centro
         Vector3 mousePos = new Vector3(_moveInput.x, _moveInput.y, 10f);
+
+        // Centro da tela
+        Vector2 centro = new Vector2(Screen.width / 2, Screen.height / 2);
+
+        // Distância até o centro
+        float distancia = Vector2.Distance(new Vector2(mousePos.x, mousePos.y), centro);
+
+        // Fator (0 no centro ? 1 longe)
+        float fator = Mathf.Clamp01(distancia / deadZone);
+
+        // deixa mais suave (curva)
+        fator = fator * fator;
+
+        // Converte para mundo
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
 
-        _target.position = worldPos;
+        // Movimento suave
+        _target.position = Vector3.Lerp(_target.position, worldPos, fator);
 
         // Follow suave
         _followTarget.position = Vector3.Lerp(
@@ -38,6 +61,16 @@ public class MouseControl : MonoBehaviour
 
         // Velocidade real do movimento
         Vector3 velocity = (_followTarget.position - _lastPosition) / Time.deltaTime;
+
+
+        veloctyG = MathF.Abs(velocity.x+ velocity.y);
+        if (veloctyG >= 0.5)
+        {
+            _chekMove = true;
+        }
+        else {
+            _chekMove = false;
+        }
 
         // Flip X
         if (velocity.x != 0)
@@ -66,6 +99,7 @@ public class MouseControl : MonoBehaviour
         );
 
         _lastPosition = _followTarget.position;
+    
     }
 
     public void MoveMouse(InputAction.CallbackContext value)
